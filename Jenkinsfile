@@ -59,6 +59,7 @@ pipeline {
                             PYTHONPATH=$WORKSPACE
                             python3 -m pytest --junitxml=result_rest.xml test/rest
                         '''
+                        junit 'result_rest.xml'
                     }
                 }
             }
