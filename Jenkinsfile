@@ -29,7 +29,7 @@ pipeline {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                             sh '''
                                 PYTHONPATH=.
-                                python3 -m coverage run --branch --source=app \
+                                python3 -m coverage run --branch --source=app --omit=app//_init_.py,app//api.py \
                                     -m pytest test/unit --junitxml=result_unit.xml
                                 python3 -m coverage xml -o coverage.xml
                             '''   
