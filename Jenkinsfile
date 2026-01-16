@@ -83,14 +83,7 @@ pipeline {
                         bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: [{test_id}] {msg}"
                         cat bandit.out
                     '''
-                    recordIssues(
-                        tools: [pyLint(pattern: 'bandit.out')],
-                        qualityGates: [
-                            [threshold: 2, type: 'TOTAL', unstable: true],
-                            [threshold: 4, type: 'TOTAL', unstable: false]
-                        ],
-                        sourceCodeRetention: 'LAST_BUILD'
-                    )
+                    recordIssues qualityGates: [[criticality: 'NOTE', integerThreshold: 2, threshold: 2.0, type: 'TOTAL'], [criticality: 'FAILURE', integerThreshold: 4, threshold: 4.0, type: 'TOTAL']], sourceCodeRetention: 'LAST_BUILD', tools: [pyLint(pattern: 'bandit.out')]
                 }
             }
         }
