@@ -1,0 +1,2 @@
+/home/magd13l/Documentos/PRY/helloworld/test/rest/api_test.py:20: [B310] Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.
+/home/magd13l/Documentos/PRY/helloworld/test/rest/api_test.py:30: [B310] Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.
