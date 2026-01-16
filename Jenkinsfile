@@ -1,12 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Get-Code') {
-            steps {
-                cleanWs()
-                git 'https://github.com/Magd13/caso1.1.git'
-            }
-        }
         stage('Machine') {
             steps {
                 sh '''
