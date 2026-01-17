@@ -21,7 +21,7 @@ pipeline {
             }
         }
 
-        stage ('Tests') {
+        stage ('Tests Unitarias e Integración') {
             // Aqui ejecuto las pruebas unitarias y rest tal cual se expuso en clase y ejecutandolas en paralelo
             parallel {
                 stage ('Unit') {
@@ -64,19 +64,24 @@ pipeline {
                 }
             }
         }
-        // Pruebas de seguridad de codigo estatico
+        // Pruebas de codigo estatico
         stage ('Static') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     sh '''
                         flake8 --exit-zero --format=pylint app >flake8.out
                     '''
-                    recordIssues qualityGates: [[criticality: 'NOTE', integerThreshold: 8, threshold: 8.0, type: 'TOTAL'], [criticality: 'ERROR', integerThreshold: 10, threshold: 10.0, type: 'TOTAL']], sourceCodeRetention: 'LAST_BUILD', tools: [flake8(pattern: 'flake8.out')]
+                    recordIssues 
+                        qualityGates: [
+                            [criticality: 'NOTE', integerThreshold: 8, threshold: 8.0, type: 'TOTAL'], 
+                            [criticality: 'ERROR', integerThreshold: 10, threshold: 10.0, type: 'TOTAL']
+                        ], 
+                        sourceCodeRetention: 'LAST_BUILD', tools: [flake8(pattern: 'flake8.out')]
                 }
             }
         }
         // Pruebas de seguridad ejecutadas con bandit
-        stage('Securty') {
+        stage('Security') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     sh'''
@@ -84,7 +89,12 @@ pipeline {
                         bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: [{test_id}] {msg}"
                         cat bandit.out
                     '''
-                    recordIssues qualityGates: [[criticality: 'NOTE', integerThreshold: 2, threshold: 2.0, type: 'TOTAL'], [criticality: 'FAILURE', integerThreshold: 4, threshold: 4.0, type: 'TOTAL']], sourceCodeRetention: 'LAST_BUILD', tools: [pyLint(pattern: 'bandit.out')]
+                    recordIssues 
+                        qualityGates: [
+                            [criticality: 'NOTE', integerThreshold: 2, threshold: 2.0, type: 'TOTAL'], 
+                            [criticality: 'FAILURE', integerThreshold: 4, threshold: 4.0, type: 'TOTAL']
+                        ], 
+                        sourceCodeRetention: 'LAST_BUILD', tools: [pyLint(pattern: 'bandit.out')]
                 }
             }
         }
@@ -105,15 +115,14 @@ pipeline {
         stage ('Cobertura') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    recordCoverage(
-                        tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']],
+                    recordCoverage 
                         qualityGates: [
-                            [threshold: 85, metric: 'LINE', unstable: true],
-                            [threshold: 80, metric: 'BRANCH', unstable: true],
-                            [threshold: 95, metric: 'LINE', unstable: false],
-                            [threshold: 90, metric: 'BRANCH', unstable: false]
+                            tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']
+                            [criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0], 
+                            [criticality: 'NOTE', integerThreshold: 95, metric: 'LINE', threshold: 95.0], 
+                            [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0], 
+                            [criticality: 'NOTE', integerThreshold: 90, metric: 'BRANCH', threshold: 90.0]], 
                         ]
-                    )
                 }
             }
         }
