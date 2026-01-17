@@ -76,7 +76,7 @@ pipeline {
                             [criticality: 'NOTE', integerThreshold: 8, threshold: 8.0, type: 'TOTAL'], 
                             [criticality: 'ERROR', integerThreshold: 10, threshold: 10.0, type: 'TOTAL']
                         ], 
-                        sourceCodeRetention: 'LAST_BUILD', tools: [flake8(pattern: 'flake8.out')]
+                        tools: [flake8(pattern: 'flake8.out')]
                 }
             }
         }
@@ -94,7 +94,7 @@ pipeline {
                             [criticality: 'NOTE', integerThreshold: 2, threshold: 2.0, type: 'TOTAL'], 
                             [criticality: 'FAILURE', integerThreshold: 4, threshold: 4.0, type: 'TOTAL']
                         ], 
-                        sourceCodeRetention: 'LAST_BUILD', tools: [pyLint(pattern: 'bandit.out')]
+                        tools: [pyLint(pattern: 'bandit.out')]
                 }
             }
         }
