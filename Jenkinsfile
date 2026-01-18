@@ -117,7 +117,7 @@ pipeline {
                     whoami
                     hostname
                     echo $WORKSPACE
-                    
+
                     /opt/jmeter/bin/jmeter \
                       -n \
                       -t test/jmeter/flask.jmx \
@@ -149,7 +149,9 @@ pipeline {
     }
     post {
         always {
-            cleanWs()
+            node {
+                cleanWs()
+            }
         }
     }
 }
