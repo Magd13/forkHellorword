@@ -75,7 +75,7 @@ pipeline {
                         qualityGates: [
                             [criticality: 'NOTE', integerThreshold: 8, threshold: 8.0, type: 'TOTAL'], 
                             [criticality: 'ERROR', integerThreshold: 10, threshold: 10.0, type: 'TOTAL']
-                        ], 
+                        ] 
                         tools: [flake8(pattern: 'flake8.out')]
                 }
             }
@@ -117,10 +117,10 @@ pipeline {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     recordCoverage 
                         qualityGates: [
-                            [criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0], 
-                            [criticality: 'NOTE', integerThreshold: 95, metric: 'LINE', threshold: 95.0], 
-                            [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0], 
-                            [criticality: 'NOTE', integerThreshold: 90, metric: 'BRANCH', threshold: 90.0], 
+                            [criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0],
+                            [criticality: 'NOTE', integerThreshold: 95, metric: 'LINE', threshold: 95.0],
+                            [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0],
+                            [criticality: 'NOTE', integerThreshold: 90, metric: 'BRANCH', threshold: 90.0]
                         ],
                         tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']]
                 }
