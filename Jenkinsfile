@@ -6,7 +6,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:3.11'
-                    args '-u root'
+                    args '-u 131:139'
                 }
             }
             steps {
@@ -32,7 +32,7 @@ pipeline {
                     agent {
                         docker {
                             image 'python:3.11'
-                            args '-u root'
+                            args '-u 131:139'
                         }
                     }
                     steps {
@@ -43,7 +43,9 @@ pipeline {
                                 hostname
                                 echo "$WORKSPACE"
 
-                                export PYTHONPATH="$WORKSPACE/.deps:$PYTHONPATH"
+                                export PYTHONPATH="$WORKSPACE/.deps:$WORKSPACE"
+                                export PATH="$WORKSPACE/.deps/bin:$PATH"
+
                                 python3 -m coverage run --branch --source=app --omit=app//__init__.py,app//api.py \
                                     -m pytest test/unit --junitxml=result_unit.xml
                                 python3 -m coverage xml -o coverage.xml
@@ -57,7 +59,7 @@ pipeline {
                     agent {
                         docker {
                             image 'python:3.11'
-                            args '-u root'
+                            args '-u 131:139'
                         }
                     }
                     steps {
@@ -66,6 +68,9 @@ pipeline {
                             id
                             hostname
                             echo "$WORKSPACE"
+
+                            export PYTHONPATH="$WORKSPACE/.deps:$WORKSPACE"
+                            export PATH="$WORKSPACE/.deps/bin:$PATH"
                             
                             export FLASK_APP=app/api.py
         
@@ -91,6 +96,12 @@ pipeline {
                 }
                 // Pruebas de seguridad de codigo estatico
                 stage ('Static && Security') {
+                    agent {
+                        docker {
+                            image 'python:3.11'
+                            args '-u 131:139'
+                        }
+                    }
                     steps {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                             unstash 'deps'
@@ -117,7 +128,7 @@ pipeline {
             agent {
                 docker {
                     image 'justb4/jmeter'
-                    args '-u root'
+                    args '-u 131:139'
                 }
             }
             steps {
@@ -140,7 +151,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:3.11'
-                    args '-u root'
+                    args '-u 131:139'
                 }
             }
             steps {
