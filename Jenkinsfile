@@ -149,12 +149,7 @@ pipeline {
     }
     post {
         always {
-            agent {
-                docker {
-                    image 'alpine'
-                }
-            }
-            steps {
+            node('built-in') {
                 cleanWs()
             }
         }
