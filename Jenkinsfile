@@ -14,9 +14,13 @@ pipeline {
                     hostname
                     echo $WORKSPACE
 
-                    python3 -m pip install flask coverage pytest bandit flake8
+                    mkdir -p $WORKSPACE/.deps
+                    python3 -m pip install \
+                      --no-cache-dir \
+                      --target=$WORKSPACE/.deps \
+                      flask coverage pytest bandit flake8
                 '''
-                stash name: 'deps', includes: '**/*'
+                stash name: 'deps', includes: '.deps/**'
             }
         }
 
@@ -37,7 +41,7 @@ pipeline {
                                 hostname
                                 echo $WORKSPACE
 
-                                PYTHONPATH=.
+                                export PYTHONPATH=$WORKSPACE/.deps:$PYTHONPATH
                                 python3 -m coverage run --branch --source=app --omit=app//__init__.py,app//api.py \
                                     -m pytest test/unit --junitxml=result_unit.xml
                                 python3 -m coverage xml -o coverage.xml
@@ -92,7 +96,9 @@ pipeline {
                                 hostname
                                 echo $WORKSPACE
 
-                                export PATH=$HOME/.local/bin:$PATH
+                                export PYTHONPATH=$WORKSPACE/.deps
+                                export PATH=$WORKSPACE/.deps/bin:$PATH
+                                
                                 flake8 --exit-zero --format=pylint app >flake8.out
                                 bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: [{test_id}] {msg}"
                             '''
