@@ -6,6 +6,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:3.11'
+                    args '-u root:root'
                 }
             }
             steps {
@@ -31,6 +32,7 @@ pipeline {
                     agent {
                         docker {
                             image 'python:3.11'
+                            args '-u root:root'
                         }
                     }
                     steps {
@@ -55,6 +57,7 @@ pipeline {
                     agent {
                         docker {
                             image 'python:3.11'
+                            args '-u root:root'
                         }
                     }
                     steps {
@@ -98,7 +101,7 @@ pipeline {
 
                                 export PYTHONPATH=$WORKSPACE/.deps
                                 export PATH=$WORKSPACE/.deps/bin:$PATH
-                                
+
                                 flake8 --exit-zero --format=pylint app >flake8.out
                                 bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: [{test_id}] {msg}"
                             '''
@@ -114,6 +117,7 @@ pipeline {
             agent {
                 docker {
                     image 'justb4/jmeter'
+                    args '-u root:root'
                 }
             }
             steps {
@@ -136,6 +140,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:3.11'
+                    args '-u root:root'
                 }
             }
             steps {
