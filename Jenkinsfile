@@ -158,10 +158,7 @@ pipeline {
                         hostname
                         echo "$WORKSPACE"
 
-                        jmeter -n \
-                          -t test/jmeter/flask.jmx \
-                          -l flask.jtl \
-                          -f
+                        ls
                     '''
                     perfReport sourceDataFiles: 'flask.jtl'
                 }
