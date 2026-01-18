@@ -158,8 +158,7 @@ pipeline {
                         hostname
                         echo "$WORKSPACE"
 
-                        jmeter \
-                          -n \
+                        jmeter -n \
                           -t test/jmeter/flask.jmx \
                           -l flask.jtl \
                           -f
