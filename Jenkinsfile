@@ -152,18 +152,20 @@ pipeline {
                 }
             }
             steps {
-                sh'''
-                    id
-                    hostname
-                    echo "$WORKSPACE"
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    sh'''
+                        id
+                        hostname
+                        echo "$WORKSPACE"
 
-                    /opt/jmeter/bin/jmeter \
-                      -n \
-                      -t test/jmeter/flask.jmx \
-                      -l flask.jtl \
-                      -f
-                '''
-                perfReport sourceDataFiles: 'flask.jtl'
+                        /jmeter/bin/jmeter \
+                          -n \
+                          -t test/jmeter/flask.jmx \
+                          -l flask.jtl \
+                          -f
+                    '''
+                    perfReport sourceDataFiles: 'flask.jtl'
+                }
             }
         }
         // Pruebas de cobertura
