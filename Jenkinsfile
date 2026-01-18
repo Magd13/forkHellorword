@@ -148,7 +148,7 @@ pipeline {
             agent {
                 docker {
                     image 'justb4/jmeter'
-                    args '-u 131:139'
+                    args '-u 131:139 --entrypoint=""'
                 }
             }
             steps {
@@ -158,7 +158,7 @@ pipeline {
                         hostname
                         echo "$WORKSPACE"
 
-                        ls
+                        jmeter -n -t test/jmeter/flask.jmx -l flask.jtl -j jmeter.log -f
                     '''
                     perfReport sourceDataFiles: 'flask.jtl'
                 }
