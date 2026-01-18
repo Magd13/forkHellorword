@@ -6,7 +6,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:3.11'
-                    args '-u root:root'
+                    args '-u root'
                 }
             }
             steps {
@@ -32,7 +32,7 @@ pipeline {
                     agent {
                         docker {
                             image 'python:3.11'
-                            args '-u root:root'
+                            args '-u root'
                         }
                     }
                     steps {
@@ -57,7 +57,7 @@ pipeline {
                     agent {
                         docker {
                             image 'python:3.11'
-                            args '-u root:root'
+                            args '-u root'
                         }
                     }
                     steps {
@@ -117,7 +117,7 @@ pipeline {
             agent {
                 docker {
                     image 'justb4/jmeter'
-                    args '-u root:root'
+                    args '-u root'
                 }
             }
             steps {
@@ -140,7 +140,7 @@ pipeline {
             agent {
                 docker {
                     image 'python:3.11'
-                    args '-u root:root'
+                    args '-u root'
                 }
             }
             steps {
