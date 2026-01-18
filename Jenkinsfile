@@ -14,9 +14,8 @@ pipeline {
                     hostname
                     echo $WORKSPACE
 
-                    export PATH=$HOME/.local/bin:$PATH
-                    python3 -m pip install --upgrade pip
-                    python3 -m pip install flask coverage pytest bandit
+                    python3 -m pip install --upgrade pip --no-cache-dir
+                    python3 -m pip install flask coverage pytest bandit flake8
                 '''
                 stash name: 'deps', includes: '**/*'
             }
