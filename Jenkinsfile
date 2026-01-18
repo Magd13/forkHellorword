@@ -18,7 +18,7 @@ pipeline {
                     python3 -m pip install --upgrade pip
                     python3 -m pip install flask coverage pytest bandit
                 '''
-                stash name: 'deps', includes: '*/**'
+                stash name: 'deps', includes: '**/*'
             }
         }
 
@@ -149,7 +149,12 @@ pipeline {
     }
     post {
         always {
-            node('any') {
+            agent {
+                docker {
+                    image 'alpine'
+                }
+            }
+            steps {
                 cleanWs()
             }
         }
