@@ -165,7 +165,6 @@ pipeline {
 
                         sleep 5
 
-                        curl -I http://localhost:5000
 
                         jmeter -n -t test/jmeter/flask.jmx -l flask.jtl -j jmeter.log -f
                     '''
