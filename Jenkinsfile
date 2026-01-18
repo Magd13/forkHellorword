@@ -13,12 +13,12 @@ pipeline {
                 sh '''
                     id
                     hostname
-                    echo $WORKSPACE
+                    echo "$WORKSPACE"
 
-                    mkdir -p $WORKSPACE/.deps
+                    mkdir -p "$WORKSPACE/.deps"
                     python3 -m pip install \
                       --no-cache-dir \
-                      --target=$WORKSPACE/.deps \
+                      --target="$WORKSPACE/.deps" \
                       flask coverage pytest bandit flake8
                 '''
                 stash name: 'deps', includes: '.deps/**'
@@ -41,9 +41,9 @@ pipeline {
                             sh '''
                                 id
                                 hostname
-                                echo $WORKSPACE
+                                echo "$WORKSPACE"
 
-                                export PYTHONPATH=$WORKSPACE/.deps:$PYTHONPATH
+                                export PYTHONPATH="$WORKSPACE/.deps:$PYTHONPATH"
                                 python3 -m coverage run --branch --source=app --omit=app//__init__.py,app//api.py \
                                     -m pytest test/unit --junitxml=result_unit.xml
                                 python3 -m coverage xml -o coverage.xml
@@ -65,7 +65,7 @@ pipeline {
                         sh '''
                             id
                             hostname
-                            echo $WORKSPACE
+                            echo "$WORKSPACE"
                             
                             export FLASK_APP=app/api.py
         
@@ -83,7 +83,7 @@ pipeline {
         
                             sleep 5
         
-                            PYTHONPATH=$WORKSPACE
+                            PYTHONPATH="$WORKSPACE"
                             python3 -m pytest --junitxml=result_rest.xml test/rest
                         '''
                         junit 'result_rest.xml'
@@ -97,10 +97,10 @@ pipeline {
                             sh '''
                                 id
                                 hostname
-                                echo $WORKSPACE
+                                echo "$WORKSPACE"
 
-                                export PYTHONPATH=$WORKSPACE/.deps
-                                export PATH=$WORKSPACE/.deps/bin:$PATH
+                                export PYTHONPATH="$WORKSPACE/.deps"
+                                export PATH="$WORKSPACE/.deps/bin:$PATH"
 
                                 flake8 --exit-zero --format=pylint app >flake8.out
                                 bandit --exit-zero -r . -f custom -o bandit.out --msg-template "{abspath}:{line}: [{test_id}] {msg}"
@@ -124,7 +124,7 @@ pipeline {
                 sh'''
                     id
                     hostname
-                    echo $WORKSPACE
+                    echo "$WORKSPACE"
 
                     /opt/jmeter/bin/jmeter \
                       -n \
@@ -149,7 +149,7 @@ pipeline {
                     sh '''
                       id
                       hostname
-                      echo $WORKSPACE
+                      echo "$WORKSPACE"
                     '''
                     recordCoverage qualityGates: [[criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0], [criticality: 'NOTE', integerThreshold: 95, metric: 'LINE', threshold: 95.0], [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0], [criticality: 'NOTE', integerThreshold: 90, metric: 'BRANCH', threshold: 90.0]], tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']]
                 }
