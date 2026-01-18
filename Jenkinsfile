@@ -1,17 +1,13 @@
 pipeline {
-    agent any
+    agent none
     stages {
-        stage('Machine') {
-            steps {
-                sh '''
-                    pwd
-                    uname -a
-                  '''
-            }
-        }
-        
         // Aqui he instalado dependecias que jenkins no contaba como coverage, bandit, etc
         stage('Install deps') {
+            agent {
+                docker {
+                    image 'python:3.11'
+                }
+            }
             steps {
                 sh '''
                     export PATH=$HOME/.local/bin:$PATH
