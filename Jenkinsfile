@@ -10,7 +10,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    whoami
+                    id
                     hostname
                     echo $WORKSPACE
 
@@ -35,7 +35,7 @@ pipeline {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                             unstash 'deps'
                             sh '''
-                                whoami
+                                id
                                 hostname
                                 echo $WORKSPACE
 
@@ -58,7 +58,7 @@ pipeline {
                     steps {
                         unstash 'deps'
                         sh '''
-                            whoami
+                            id
                             hostname
                             echo $WORKSPACE
                             
@@ -90,7 +90,7 @@ pipeline {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                             unstash 'deps'
                             sh '''
-                                whoami
+                                id
                                 hostname
                                 echo $WORKSPACE
 
@@ -114,7 +114,7 @@ pipeline {
             }
             steps {
                 sh'''
-                    whoami
+                    id
                     hostname
                     echo $WORKSPACE
 
@@ -138,7 +138,7 @@ pipeline {
                 unstash 'coverage'
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     sh '''
-                      whoami
+                      id
                       hostname
                       echo $WORKSPACE
                     '''
