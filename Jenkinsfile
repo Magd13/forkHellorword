@@ -58,40 +58,42 @@ pipeline {
                 stage('Rest') {
                     agent {
                         docker {
-                            image 'python:3.11'
+                            image 'python-java:3.11'
                             args '-u 131:139'
                         }
                     }
                     steps {
-                        unstash 'deps'
-                        sh '''
-                            id
-                            hostname
-                            echo "$WORKSPACE"
-
-                            export PYTHONPATH="$WORKSPACE/.deps:$WORKSPACE"
-                            export PATH="$WORKSPACE/.deps/bin:$PATH"
-                            
-                            export FLASK_APP=app/api.py
-        
-                            python3 -m flask run --host=0.0.0.0 --port=5000 &
-        
-                            mkdir -p tools/wiremock
-                            if [ ! -f tools/wiremock/wiremock-standalone-3.3.1.jar ]; then
-                              curl -L -o tools/wiremock/wiremock-standalone-3.3.1.jar \
-                                https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.3.1/wiremock-standalone-3.3.1.jar
-                            fi
-        
-                            java -jar tools/wiremock/wiremock-standalone-3.3.1.jar \
-                              --port 9090 \
-                              --root-dir test/wiremock &
-        
-                            sleep 5
-        
-                            PYTHONPATH="$WORKSPACE"
-                            python3 -m pytest --junitxml=result_rest.xml test/rest
-                        '''
-                        junit 'result_rest.xml'
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            unstash 'deps'
+                            sh '''
+                                id
+                                hostname
+                                echo "$WORKSPACE"
+    
+                                export PYTHONPATH="$WORKSPACE/.deps:$WORKSPACE"
+                                export PATH="$WORKSPACE/.deps/bin:$PATH"
+                                
+                                export FLASK_APP=app/api.py
+            
+                                python3 -m flask run --host=0.0.0.0 --port=5000 &
+            
+                                mkdir -p tools/wiremock
+                                if [ ! -f tools/wiremock/wiremock-standalone-3.3.1.jar ]; then
+                                  curl -L -o tools/wiremock/wiremock-standalone-3.3.1.jar \
+                                    https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.3.1/wiremock-standalone-3.3.1.jar
+                                fi
+            
+                                java -jar tools/wiremock/wiremock-standalone-3.3.1.jar \
+                                  --port 9090 \
+                                  --root-dir test/wiremock &
+            
+                                sleep 5
+            
+    
+                                python3 -m pytest --junitxml=result_rest.xml test/rest
+                            '''
+                            junit 'result_rest.xml'
+                        }
                     }
                 }
                 // Pruebas de seguridad de codigo estatico
