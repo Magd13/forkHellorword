@@ -158,6 +158,15 @@ pipeline {
                         hostname
                         echo "$WORKSPACE"
 
+                        export PYTHONPATH="$WORKSPACE/.deps:$WORKSPACE"
+                        export PATH="$WORKSPACE/.deps/bin:$PATH"
+                        export FLASK_APP=app/api.py
+                        python3 -m flask run --host=0.0.0.0 --port=5000 &
+
+                        sleep 5
+
+                        curl -I http://localhost:5000
+
                         jmeter -n -t test/jmeter/flask.jmx -l flask.jtl -j jmeter.log -f
                     '''
                     perfReport sourceDataFiles: 'flask.jtl'
